@@ -21,6 +21,10 @@
 #include "DataFormats/CTPPSDigi/interface/CTPPSPixelDigiCollection.h"
 #include "DataFormats/CTPPSDigi/interface/CTPPSPixelDataError.h"
 
+#include "DataFormats/CTPPSDigi/interface/RPStripDigi.h"
+#include "DataFormats/CTPPSDigi/interface/RPDetTrigger.h"
+#include "DataFormats/CTPPSDigi/interface/RPDigCluster.h"
+
 #include <vector>
 
 namespace DataFormats_CTPPSDigi {
@@ -33,6 +37,28 @@ namespace DataFormats_CTPPSDigi {
     edm::Wrapper<edm::DetSet<TotemRPDigi> > wds_rp_str_dig;
     edm::Wrapper<edm::DetSetVector<TotemRPDigi> > wdsv_rp_str_dig;
 
+    RPStripDigi rp_str_digT;
+    edm::DetSet<RPStripDigi> ds_rp_str_digT;
+    std::vector<RPStripDigi> vec_rp_str_digT;
+    edm::DetSetVector<RPStripDigi> dsv_rp_str_digT;
+    std::vector<edm::DetSet<RPStripDigi> > vec_ds_rp_str_digT;
+    edm::Wrapper<edm::DetSet<RPStripDigi> > wds_rp_str_digT;
+    edm::Wrapper<edm::DetSetVector<RPStripDigi> > wdsv_rp_str_digT;
+
+    RPDetTrigger rp_str_tri;
+    edm::DetSet<RPDetTrigger> ds_rp_str_tri;
+    std::vector<RPDetTrigger> vec_rp_str_tri;
+    std::vector<edm::DetSet<RPDetTrigger> > vec_ds_rp_str_tri;
+    edm::DetSetVector<RPDetTrigger> dsv_rp_str_tri;
+    edm::Wrapper<edm::DetSet<RPDetTrigger> > wds_rp_str_tri;
+    edm::Wrapper<edm::DetSetVector<RPDetTrigger> > wdsv_rp_str_tri;
+
+    RPDigCluster dc;
+    edm::DetSet<RPDigCluster> dsdc;
+    std::vector<RPDigCluster> svdc;
+    std::vector<edm::DetSet<RPDigCluster> > svdsdc;
+    edm::DetSetVector<RPDigCluster> dsvdc;
+    edm::Wrapper<edm::DetSetVector<RPDigCluster> > wdsvdc;
     TotemTriggerCounters dummy10;
     edm::Wrapper<TotemTriggerCounters> dummy11;
 

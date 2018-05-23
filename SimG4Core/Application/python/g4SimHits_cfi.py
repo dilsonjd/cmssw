@@ -421,9 +421,6 @@ g4SimHits = cms.EDProducer("OscarMTProducer",
         MouseBite        = cms.untracked.double(2.5),
         CheckID          = cms.untracked.bool(True),
     ),
-    TotemSD = cms.PSet(
-        Verbosity = cms.untracked.int32(0)
-    ),
     ZdcSD = cms.PSet(
         Verbosity = cms.int32(0),
         UseShowerLibrary = cms.bool(True),
@@ -482,6 +479,16 @@ g4SimHits = cms.EDProducer("OscarMTProducer",
         TimeSliceUnit   = cms.double(1),
         IgnoreTrackID   = cms.bool(False),
     ),
+    Totem_RP_SD = cms.PSet(
+        Verbosity = cms.int32(0)
+    ),
+    CTPPS_Diamond_SD = cms.PSet(
+        Verbosity = cms.int32(0)
+    ),
+    CTPPSSD = cms.PSet(
+        Verbosity = cms.untracked.int32(0)
+    ),
+
 )
 
 

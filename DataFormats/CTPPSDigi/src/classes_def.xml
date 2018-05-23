@@ -9,6 +9,35 @@
   <class name="edm::Wrapper<edm::DetSet<TotemRPDigi> >"/>
   <class name="edm::Wrapper<edm::DetSetVector<TotemRPDigi> >"/>
 
+  <class name="RPStripDigi" ClassVersion="3">
+    <version ClassVersion="3" checksum="3649241185"/>
+  </class>
+  <class name="edm::DetSet<RPStripDigi>"/>
+  <class name="std::vector<edm::DetSet<RPStripDigi> >"/>
+  <class name="std::vector<RPStripDigi>"/>
+  <class name="edm::DetSetVector<RPStripDigi>"/>
+  <class name="edm::Wrapper<edm::DetSet<RPStripDigi> >"/>
+  <class name="edm::Wrapper<edm::DetSetVector<RPStripDigi> >"/>
+ 
+  <class name="RPDetTrigger" ClassVersion="4">
+    <version ClassVersion="4" checksum="467767359"/>
+  </class>
+  <class name="edm::DetSet<RPDetTrigger>"/>
+  <class name="std::vector<edm::DetSet<RPDetTrigger> >"/>
+  <class name="std::vector<RPDetTrigger>"/>
+  <class name="edm::DetSetVector<RPDetTrigger>"/>
+  <class name="edm::Wrapper<edm::DetSetVector<RPDetTrigger> >"/>
+  <class name="edm::Wrapper<edm::DetSet<RPDetTrigger> >"/>
+
+  <class name="RPDigCluster" ClassVersion="5">
+    <version ClassVersion="5" checksum="2487179143"/>
+  </class>
+  <class name="edm::DetSet<RPDigCluster>"/>
+  <class name="std::vector<RPDigCluster>"/>
+  <class name="std::vector<edm::DetSet<RPDigCluster> >"/>
+  <class name="edm::DetSetVector<RPDigCluster>"/>
+  <class name="edm::Wrapper<edm::DetSetVector<RPDigCluster> >"/>
+
   <class name="TotemTriggerCounters" ClassVersion="2">
     <version ClassVersion="2" checksum="719923071"/>
   </class>

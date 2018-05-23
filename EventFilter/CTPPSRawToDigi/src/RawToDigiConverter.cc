@@ -2,7 +2,7 @@
 *
 * This is a part of TOTEM offline software.
 * Authors:
-*   Jan Kašpar (jan.kaspar@gmail.com)
+*   Jan Ka??par (jan.kaspar@gmail.com)
 *   Seyed Mohsen Etesami (setesami@cern.ch)
 ****************************************************************************/
 
@@ -237,21 +237,34 @@ void RawToDigiConverter::run(const VFATFrameCollection &input,
           record.status.setPartiallyMaskedOut();
       }
 
-      // create the digi
+      // create the digi. Add correction in order to get the full channel value
+
       unsigned short offset = chipPosition * 128;
       const vector<unsigned char> &activeChannels = record.frame->getActiveChannels();
-
+      vector<unsigned char> vtempCH;
+           
       for (auto ch : activeChannels)
       {
         // skip masked channels
         if (!anMa.fullMask && anMa.maskedChannels.find(ch) == anMa.maskedChannels.end())
         {
-          DetSet<TotemRPDigi> &digiDetSet = rpData.find_or_insert(detId);
-          digiDetSet.push_back(TotemRPDigi(offset + ch));
+          vtempCH.push_back(ch);
+          if(activeChannels.size() == vtempCH.size()) {
+            unsigned char channel = 0;
+            for(std::vector<unsigned char>::iterator it = vtempCH.begin() ; it != vtempCH.end(); ++it) {
+              channel |= 1 << *it;
+              if(*it > 15) channel |= 1 << ((*it)-16);
+              if(*it < *next(it) || *it == ch ) {
+                DetSet<TotemRPDigi> &digiDetSet = rpData.find_or_insert(detId);
+                digiDetSet.push_back(TotemRPDigi(offset + channel));
+                channel = 0;
+              }
+            }
+          }
         }
       }
     }
-
+ 
     // save status
     DetSet<TotemVFATStatus> &statusDetSet = finalStatus.find_or_insert(detId);
     statusDetSet.push_back(record.status);
