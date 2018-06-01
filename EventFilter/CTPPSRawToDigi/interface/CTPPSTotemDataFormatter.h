@@ -28,7 +28,6 @@
 #include "DataFormats/CTPPSDigi/interface/TotemVFATStatus.h"
 #include "EventFilter/CTPPSRawToDigi/interface/VFATFrame.h"
 #include "FWCore/Framework/interface/EventSetup.h"
-#include "CondFormats/CTPPSReadoutObjects/interface/CTPPSElectronicIndex.h"
 /// \brief Collection of code to convert TOTEM raw data into digi.
 
 class FEDRawData;

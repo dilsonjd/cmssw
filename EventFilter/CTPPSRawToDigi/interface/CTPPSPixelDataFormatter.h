@@ -40,7 +40,7 @@
 #include "EventFilter/CTPPSRawToDigi/interface/RPixErrorChecker.h"
 
 #include "CondFormats/CTPPSReadoutObjects/interface/CTPPSPixelIndices.h"
-#include "CondFormats/CTPPSReadoutObjects/interface/CTPPSElectronicIndex.h"
+#include "EventFilter/CTPPSRawToDigi/interface/CTPPSElectronicIndex.h"
 #include "FWCore/Utilities/interface/typedefs.h"
 
 #include <cstdint>
