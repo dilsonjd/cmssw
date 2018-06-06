@@ -36,6 +36,8 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "FWCore/ParameterSet/interface/ParameterSetDescription.h"
+#include "FWCore/ParameterSet/interface/ConfigurationDescriptions.h"
 
 //  ****  CTPPS
 #include "DataFormats/CTPPSDigi/interface/CTPPSPixelDigi.h"
@@ -46,6 +48,15 @@
 
 #include "DataFormats/Common/interface/DetSet.h"
 
+// DB
+#include "CondFormats/DataRecord/interface/CTPPSPixelDAQMappingRcd.h"
+#include "CondFormats/DataRecord/interface/CTPPSPixelAnalysisMaskRcd.h"
+#include "CondFormats/CTPPSReadoutObjects/interface/CTPPSPixelDAQMapping.h"
+#include "CondFormats/CTPPSReadoutObjects/interface/CTPPSPixelAnalysisMask.h"
+#include "CondFormats/CTPPSReadoutObjects/interface/CTPPSPixelGainCalibrations.h"
+#include "RecoCTPPS/PixelLocal/interface/CTPPSPixelGainCalibrationDBService.h"
+
+
 namespace CLHEP {
   class HepRandomEngine;
 }
@@ -54,7 +65,7 @@ class CTPPSPixelDigiProducer : public edm::EDProducer {
    public:
       explicit CTPPSPixelDigiProducer(const edm::ParameterSet&);
       ~CTPPSPixelDigiProducer();
-
+      static void fillDescriptions(edm::ConfigurationDescriptions & descriptions);
    private:
       virtual void beginRun(edm::Run&, edm::EventSetup const&);
       virtual void produce(edm::Event&, const edm::EventSetup&);
@@ -78,6 +89,8 @@ class CTPPSPixelDigiProducer : public edm::EDProducer {
 
       CLHEP::HepRandomEngine* rndEngine = nullptr;
       int verbosity_;
+
+      CTPPSPixelGainCalibrationDBService theGainCalibrationDB;
 
       /**
        * this variable answers the question whether given channel is dead or not

@@ -9,8 +9,10 @@
 #include "SimGeneral/NoiseGenerators/interface/GaussianTailNoiseGenerator.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "FWCore/Framework/interface/EventSetup.h"
+//#include "FWCore/ParameterSet/interface/ParameterSetDescription.h"
+//#include "FWCore/ParameterSet/interface/ConfigurationDescriptions.h"
 
+#include "FWCore/Framework/interface/EventSetup.h"
 
 #include "SimCTPPS/CTPPSPixelDigiProducer/interface/RPixHitChargeConverter.h"
 #include "SimCTPPS/CTPPSPixelDigiProducer/interface/RPixDummyROCSimulator.h"
@@ -20,23 +22,28 @@
 
 #include "SimCTPPS/CTPPSPixelDigiProducer/interface/RPixPileUpSignals.h"
 
+#include "CondFormats/CTPPSReadoutObjects/interface/CTPPSPixelGainCalibrations.h"
+#include "RecoCTPPS/PixelLocal/interface/CTPPSPixelGainCalibrationDBService.h"
+
+#include "CondFormats/CTPPSReadoutObjects/interface/CTPPSPixelAnalysisMask.h"
 
 namespace CLHEP{
   class HepRandomEngine;
 }
 
-
 class RPixDetDigitizer
 {
+
 public:
   RPixDetDigitizer(const edm::ParameterSet &params, CLHEP::HepRandomEngine& eng, uint32_t det_id, const edm::EventSetup& iSetup);
   void run(const std::vector<PSimHit> &input, const std::vector<int> &input_links, 
 	   std::vector<CTPPSPixelDigi> &output_digi,
-	   std::vector<std::vector<std::pair<int, double> > >  &output_digi_links
-
-
+	   std::vector<std::vector<std::pair<int, double> > >  &output_digi_links,
+           const CTPPSPixelGainCalibrations * pcalibration
     );
+
   ~RPixDetDigitizer();
+//  static void fillDescriptions(edm::ConfigurationDescriptions & descriptions);
       
 private:
 //    RPGaussianTailNoiseAdder *theRPGaussianTailNoiseAdder;
