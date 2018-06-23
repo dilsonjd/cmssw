@@ -5,7 +5,6 @@
 #include "SimPPS/PPSPixelDigiProducer/interface/RPixSignalPoint.h"
 #include "SimPPS/PPSPixelDigiProducer/interface/RPixEnergyDepositUnit.h"
 
-
 class RPixLinearChargeCollectionDrifter
 {
 public:

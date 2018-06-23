@@ -45,7 +45,7 @@ std::map<unsigned short, double, std::less<unsigned short> >  RPixChargeShare::S
 {
   thePixelChargeMap.clear();
   if(verbosity_>1)
-    std::cout<<"RPixChargeShare "<<det_id_<<" : Clouds to be induced= "<<charge_map.size()<<std::endl;
+    edm::LogInfo("RPixChargeShare")<<det_id_<<" : Clouds to be induced= "<<charge_map.size();
 
   double CH =0;
 
@@ -55,13 +55,13 @@ std::map<unsigned short, double, std::less<unsigned short> >  RPixChargeShare::S
       double hit_pos_x,hit_pos_y;
 // Used to avoid the abort due to hits out of detector 
       if (((*i).X()+16.6/2)<0||((*i).X()+16.6/2)>16.6) {
-	std::cout << "**** Attention ((*i).X()+simX_width_/2.)<0||((*i).X()+simX_width_/2.)>simX_width  " << std::endl;
-	std::cout << "(*i).X() = " << (*i).X() << std::endl;
+	edm::LogInfo("RPixChargeShare") << "**** Attention ((*i).X()+simX_width_/2.)<0||((*i).X()+simX_width_/2.)>simX_width  " ;
+	edm::LogInfo("RPixChargeShare") << "(*i).X() = " << (*i).X() ;
 	continue;
       }
       if (((*i).Y()+24.4/2.)<0||((*i).Y()+24.4/2.)>24.4) {
-	std::cout << "**** Attention ((*i).Y()+simY_width_/2.)<0||((*i).Y()+simY_width_/2.)>simY_width  " << std::endl;
-	std::cout << "(*i).Y() = " << (*i).Y() << std::endl;
+	edm::LogInfo("RPixChargeShare") << "**** Attention ((*i).Y()+simY_width_/2.)<0||((*i).Y()+simY_width_/2.)>simY_width  " ;
+	edm::LogInfo("RPixChargeShare") << "(*i).Y() = " << (*i).Y() ;
 	continue;
       }
       
@@ -75,7 +75,7 @@ std::map<unsigned short, double, std::less<unsigned short> >  RPixChargeShare::S
 	  CH += charge_in_pixel;
 
 	  if(verbosity_>1)
-	    std::cout<<"Efficiency in detector "<<det_id_<< " and pixel no " << pixel_no << "  : " <<effic<< "  ch: "<< charge_in_pixel << "   CHtot: "<< CH << std::endl;
+	    edm::LogInfo("RPixChargeShare")<<"Efficiency in detector "<<det_id_<< " and pixel no " << pixel_no << "  : " <<effic<< "  ch: "<< charge_in_pixel << "   CHtot: "<< CH ;
 
 //        QUI SI POTREBBE INTRODURRE IL CHARGE SHARING TRA I PIXELS ..................................       
 

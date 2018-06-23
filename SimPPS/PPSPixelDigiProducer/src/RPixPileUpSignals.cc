@@ -1,6 +1,5 @@
 #include "SimPPS/PPSPixelDigiProducer/interface/RPixPileUpSignals.h"
-#include <iostream>
-
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 RPixPileUpSignals::RPixPileUpSignals(const edm::ParameterSet & params, uint32_t det_id)
   : det_id_(det_id)
@@ -26,7 +25,7 @@ void RPixPileUpSignals::add(const std::map<unsigned short, double, std::less<uns
 	  the_pixel_charge_piled_up_map_links_[i->first].push_back(std::pair<int, double>(PSimHitIndex, i->second));
 	  if(verbosity_)
 	    {
-	      std::cout<<"Det id="<<det_id_<<" pixel="<<i->first<<" charge="<<i->second<<std::endl;
+	      edm::LogInfo("RPixPileUpSignals")<<"Det id="<<det_id_<<" pixel="<<i->first<<" charge="<<i->second;
 	    }
 	}
     }

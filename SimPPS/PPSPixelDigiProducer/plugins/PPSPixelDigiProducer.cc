@@ -70,7 +70,7 @@ void CTPPSPixelDigiProducer::fillDescriptions(edm::ConfigurationDescriptions & d
   desc.add<std::string>("ChargeMapFile2E_2X","SimPPS/PPSPixelDigiProducer/data/PixelChargeMap_2X.txt");
   desc.add<std::string>("ChargeMapFile2E_2Y","SimPPS/PPSPixelDigiProducer/data/PixelChargeMap_2Y.txt");
   desc.add<std::string>("ChargeMapFile2E_2X2Y","SimPPS/PPSPixelDigiProducer/data/PixelChargeMap_2X2Y.txt");
-  desc.add<double>("RPixCoupling",0.0); // fraction of the remaining charge going to the closer neighbour pixel. Value = 0.135, Value = 0.0 bypass the charge map and the charge sharing approach
+  desc.add<double>("RPixCoupling",0.250); // fraction of the remaining charge going to the closer neighbour pixel. Value = 0.135, Value = 0.0 bypass the charge map and the charge sharing approach
 
 // RPixDummyROCSimulator
   desc.add<double>("RPixDummyROCThreshold",1900.0);
@@ -87,7 +87,7 @@ void CTPPSPixelDigiProducer::fillDescriptions(edm::ConfigurationDescriptions & d
  
   desc.add<std::string>("mixLabel","mix");
   desc.add<std::string>("InputCollection","g4SimHitsCTPPSPixelHits");
- descriptions.add("ppspixeldigitizer", desc);
+ descriptions.add("RPixDetDigitizer", desc);
 }
 
 
@@ -98,7 +98,6 @@ void CTPPSPixelDigiProducer::fillDescriptions(edm::ConfigurationDescriptions & d
 // ------------ method called to produce the data  ------------
 void CTPPSPixelDigiProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
   using namespace edm;
-// initialize random engine
   if(!rndEngine) {
     Service<RandomNumberGenerator> rng;
     if (!rng.isAvailable()) {
@@ -118,19 +117,19 @@ void CTPPSPixelDigiProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
   iEvent.getByToken(tokenCrossingFramePPSPixel, cf);
 
   if (verbosity_) {
-    std::cout << "\n\n=================== Starting SimHit access" << "  ===================" << std::endl;
+    edm::LogInfo("PPSPixelDigiProducer") << "\n\n=================== Starting SimHit access" << "  ===================" ;
 
     std::auto_ptr<MixCollection<PSimHit> > col(
 					       new MixCollection<PSimHit> (cf.product(), std::pair<int, int>(-0, 0)));
-    std::cout << *(col.get()) << std::endl;
+    edm::LogInfo("PPSPixelDigiProducer") << *(col.get()) ;
     MixCollection<PSimHit>::iterator cfi;
     int count = 0;
     for (cfi = col->begin(); cfi != col->end(); cfi++) {
-      std::cout << " Hit " << count << " has tof " << cfi->timeOfFlight() << " trackid "
+      edm::LogInfo("PPSPixelDigiProducer") << " Hit " << count << " has tof " << cfi->timeOfFlight() << " trackid "
 		<< cfi->trackId() << " bunchcr " << cfi.bunch() << " trigger " << cfi.getTrigger()
 		<< ", from EncodedEventId: " << cfi->eventId().bunchCrossing() << " "
-		<< cfi->eventId().event() << " bcr from MixCol " << cfi.bunch() << std::endl;
-      std::cout << " Hit: " << (*cfi) << "  " << cfi->exitPoint()<<std::endl;
+		<< cfi->eventId().event() << " bcr from MixCol " << cfi.bunch() ;
+      edm::LogInfo("PPSPixelDigiProducer") << " Hit: " << (*cfi) << "  " << cfi->exitPoint();
       count++;
     }
   }
@@ -140,7 +139,7 @@ void CTPPSPixelDigiProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
 						     new MixCollection<PSimHit> (cf.product(), std::pair<int, int>(0, 0)));
 
   if (verbosity_)
-    std::cout << "Input MixCollection size = " << allRPixHits->size() << std::endl;
+    edm::LogInfo("PPSPixelDigiProducer") << "Input MixCollection size = " << allRPixHits->size() ;
 
 //Loop on PSimHit
   SimHitMap.clear();
@@ -184,7 +183,7 @@ void CTPPSPixelDigiProducer::produce(edm::Event& iEvent, const edm::EventSetup& 
 								  new edm::DetSetVector<CTPPSPixelDigi>(theDigiVector));    
 
   if (verbosity_) {
-    std::cout << "digi_output->size()=" << digi_output->size() << std::endl;
+    edm::LogInfo("PPSPixelDigiProducer") << "digi_output->size()=" << digi_output->size() ;
 
   }
 

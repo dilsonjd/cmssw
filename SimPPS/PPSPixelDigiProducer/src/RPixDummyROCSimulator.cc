@@ -4,11 +4,9 @@
 #include "TRandom.h"
 #include <iostream>
 
-
 RPixDummyROCSimulator::RPixDummyROCSimulator(const edm::ParameterSet &params, uint32_t det_id)
   : params_(params), det_id_(det_id)
 {
-
   threshold_ = params.getParameter<double>("RPixDummyROCThreshold");
   electron_per_adc_ = params.getParameter<double>("RPixDummyROCElectronPerADC");
   VcaltoElectronGain_ = params.getParameter<int>("VCaltoElectronGain");
@@ -19,10 +17,7 @@ RPixDummyROCSimulator::RPixDummyROCSimulator(const edm::ParameterSet &params, ui
   pixels_no_ = CTPPSPixelTopology().detPixelNo();
   verbosity_ = params.getParameter<int>("RPixVerbosity");
   links_persistence_ = params.getParameter<bool>("CTPPSPixelDigiSimHitRelationsPersistence");
-  
-  if(dead_pixels_simulation_on_)
-    SetDeadPixels();
-
+  if(dead_pixels_simulation_on_) SetDeadPixels();
 }
 
 void RPixDummyROCSimulator::ConvertChargeToHits(const std::map<unsigned short, double, std::less<unsigned short> > &signals, 
@@ -37,9 +32,8 @@ void RPixDummyROCSimulator::ConvertChargeToHits(const std::map<unsigned short, d
       i!=signals.end(); ++i)
     {
     //one threshold per hybrid
-      unsigned short pixel_no = i->first;   // questo dovrebbe essere il PixelIndex di CTPPSPixelSimTopology.h (col*160+row)
-      //std::cout << " --------------------------------------- threshold " << threshold_ << std::endl;
-      if(verbosity_)std::cout << "Dummy ROC adc and threshold : "<< i->second << ", " << threshold_ << std::endl; 
+      unsigned short pixel_no = i->first; 
+      if(verbosity_)edm::LogInfo("RPixDummyROCSimulator") << "Dummy ROC adc and threshold : "<< i->second << ", " << threshold_ ; 
       if(i->second > threshold_ && (!dead_pixels_simulation_on_ 
 				    || dead_pixels_.find(pixel_no)==dead_pixels_.end() ))
 	{
@@ -64,25 +58,23 @@ void RPixDummyROCSimulator::ConvertChargeToHits(const std::map<unsigned short, d
              pedestal = DetCalibs.getPed(col,row);
              adc = int(round((i->second - VcaltoElectronOffset_ )/(gain*VcaltoElectronGain_) + pedestal));
            } 
-          } 
-	  //std::cout << "------- RPixDummyROC -- charge, e_per_adc, adc " << i->second << ", "<< electron_per_adc_ << ", " << adc << std::endl;
-
+          }
 /// set maximum for 8 bits adc
 	  if (adc >=255) adc=255;
-	  output_digi.push_back(CTPPSPixelDigi(row,col,adc) );//(det_id_, pixel_no)); /// ?????????????????????????????????????? devo metterci row, col e conteggi adc
+          if (adc<0) adc=0; 
+	  output_digi.push_back(CTPPSPixelDigi(row,col,adc) );
 	  if(links_persistence_)
 	    {
 	      output_digi_links.push_back(theSignalProvenance[pixel_no]);
 	      if(verbosity_)
 		{
-		  std::cout<<"digi links size="<<theSignalProvenance[pixel_no].size()<<std::endl;
+		  edm::LogInfo("RPixDummyROCSimulator")<<"digi links size="<<theSignalProvenance[pixel_no].size();
 		  for(unsigned int u=0; u<theSignalProvenance[pixel_no].size(); ++u)
 		    {
-		      std::cout<<"   digi: particle="<<theSignalProvenance[pixel_no][u].first<<" energy [electrons]="<<theSignalProvenance[pixel_no][u].second<<std::endl;
+		      edm::LogInfo("RPixDummyROCSimulator")<<"   digi: particle="<<theSignalProvenance[pixel_no][u].first<<" energy [electrons]="<<theSignalProvenance[pixel_no][u].second;
 		    }
 		}
 	    }
- 
 	}
     }
 
@@ -90,8 +82,8 @@ void RPixDummyROCSimulator::ConvertChargeToHits(const std::map<unsigned short, d
     {
       for(unsigned int i=0; i<output_digi.size(); ++i)
 	{
-	  std::cout<<"Dummy ROC Simulator "<<   det_id_ << "     row= " //output_digi[i].GetDetId()<<" "
-		   <<output_digi[i].row() << "   col= " << output_digi[i].column() << "   adc= "<<  output_digi[i].adc() <<std::endl;
+	  edm::LogInfo("RPixDummyROCSimulator")<<"Dummy ROC Simulator "<<   det_id_ << "     row= " //output_digi[i].GetDetId()<<" "
+		   <<output_digi[i].row() << "   col= " << output_digi[i].column() << "   adc= "<<  output_digi[i].adc() ;
 	}
     }
 }

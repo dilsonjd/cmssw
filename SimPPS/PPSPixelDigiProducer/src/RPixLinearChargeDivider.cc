@@ -1,5 +1,4 @@
 #include "SimPPS/PPSPixelDigiProducer/interface/RPixLinearChargeDivider.h"
-//#include "Geometry/VeryForwardGeometry/interface/RPixHepPDTWrapper.h"
 #include "DataFormats/GeometryVector/interface/LocalPoint.h"
 #include "DataFormats/GeometryVector/interface/LocalVector.h"
 #include "Geometry/VeryForwardGeometry/interface/CTPPSPixelTopology.h"
@@ -8,21 +7,15 @@ RPixLinearChargeDivider::RPixLinearChargeDivider(const edm::ParameterSet &params
 						 uint32_t det_id) : params_(params), rndEngine(eng) , _det_id(det_id)
 {
   verbosity_ = params.getParameter<int>("RPixVerbosity");
-
   fluctuate = new SiG4UniversalFluctuation();
-
   fluctuateCharge_ = params.getParameter<bool>("RPixLandauFluctuations");
-  
   chargedivisions_ = params.getParameter<int>("RPixChargeDivisions");
- 
   deltaCut_ = params.getParameter<double>("RPixDeltaProductionCut");
-
 }
 
 RPixLinearChargeDivider::~RPixLinearChargeDivider(){
   delete fluctuate;
 }
-
 
 std::vector<RPixEnergyDepositUnit> RPixLinearChargeDivider::divide(const PSimHit& hit)
 {
@@ -34,9 +27,7 @@ std::vector<RPixEnergyDepositUnit> RPixLinearChargeDivider::divide(const PSimHit
     }
 
   int NumberOfSegmentation = chargedivisions_ ;
-  
   double eLoss = hit.energyLoss();  // Eloss in GeV
- 
   the_energy_path_distribution_.resize(NumberOfSegmentation);
  
   if(fluctuateCharge_)
@@ -63,17 +54,17 @@ std::vector<RPixEnergyDepositUnit> RPixLinearChargeDivider::divide(const PSimHit
   
   if(verbosity_)
     {
-      std::cout<<_det_id<<" charge along the track:"<<std::endl;
+      edm::LogInfo("RPixLinearChargeDivider")<<_det_id<<" charge along the track:";
       double sum=0;
       for(unsigned int i=0; i<the_energy_path_distribution_.size(); i++)
 	{
-	  std::cout<<the_energy_path_distribution_[i].X()<<" "
+	  edm::LogInfo("RPixLinearChargeDivider")<<the_energy_path_distribution_[i].X()<<" "
 		   <<the_energy_path_distribution_[i].Y()<<" "
 		   <<the_energy_path_distribution_[i].Z()<<" "
-		   <<the_energy_path_distribution_[i].Energy()<<std::endl;
+		   <<the_energy_path_distribution_[i].Energy();
 	  sum += the_energy_path_distribution_[i].Energy();
 	}
-      std::cout<<"energy dep. sum="<<sum<<std::endl;
+      edm::LogInfo("RPixLinearChargeDivider")<<"energy dep. sum="<<sum;
     }
   
   return the_energy_path_distribution_;
@@ -83,11 +74,6 @@ void RPixLinearChargeDivider::FluctuateEloss(int pid, double particleMomentum,
 					     double eloss, double length, int NumberOfSegs, 
 					     std::vector<RPixEnergyDepositUnit>  &elossVector)
 {
-
-//  double particleMass = RPixHepPDTWrapper::GetMass(pid)*1000; //to have the mass in MeV
-//  if(particleMass==-1)
-//    particleMass = 139.57; // Mass in MeV, Assume pion
-
   double particleMass = 139.6; // Mass in MeV, Assume pion
   pid = std::abs(pid);
   if (pid != 211) {       // Mass in MeV
@@ -107,7 +93,7 @@ void RPixLinearChargeDivider::FluctuateEloss(int pid, double particleMomentum,
     {
        double deltaCutoff = deltaCut_;
       de = fluctuate->SampleFluctuations(particleMomentum*1000, particleMass, 
-					 deltaCutoff, segmentLength, segmentEloss, &(rndEngine))/1000; //convert to GeV
+	 deltaCutoff, segmentLength, segmentEloss, &(rndEngine))/1000; //convert to GeV
       elossVector[i].Energy()=de;
       sum+=de;
     }

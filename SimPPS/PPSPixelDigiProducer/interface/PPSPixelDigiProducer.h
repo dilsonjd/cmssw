@@ -16,7 +16,6 @@
 */
 //
 // Original Author:  F.Ferro
-
 //
 
 #include "boost/shared_ptr.hpp"
@@ -79,31 +78,16 @@ class CTPPSPixelDigiProducer : public edm::EDProducer {
       
       edm::ParameterSet conf_;
 
-
       std::map<uint32_t, boost::shared_ptr<RPixDetDigitizer> > theAlgoMap;  //DetId = uint32_t 
 
-
-
       std::vector<edm::DetSet<CTPPSPixelDigi> > theDigiVector;
-
 
       CLHEP::HepRandomEngine* rndEngine = nullptr;
       int verbosity_;
 
       CTPPSPixelGainCalibrationDBService theGainCalibrationDB;
 
-      /**
-       * this variable answers the question whether given channel is dead or not
-       */
-//      DeadChannelsManager deadChannelsManager;
-      /**
-       * this variable indicates whether we take into account dead channels or simulate as if all
-       * channels work ok (by default we do not simulate dead channels)
-       */
-      //    bool simulateDeadChannels;
-
       edm::EDGetTokenT<CrossingFrame<PSimHit>> tokenCrossingFramePPSPixel;
 };
-
 
 #endif

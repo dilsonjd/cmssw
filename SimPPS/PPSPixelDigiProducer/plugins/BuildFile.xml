@@ -2,7 +2,7 @@
 <use   name="SimGeneral/NoiseGenerators"/>
 <use   name="FWCore/ParameterSet"/>
 <use   name="FWCore/Framework"/>
-<use name="FWCore/PluginManager"/>
+<use   name="FWCore/PluginManager"/>
 <use   name="DataFormats/Common"/>
 <use   name="DataFormats/CTPPSDigi"/>
 <use   name="SimDataFormats/CrossingFrame"/>
@@ -15,8 +15,8 @@
 <use   name="boost"/>
 <use   name="geant4"/>
 <use   name="DataFormats/CTPPSDetId"/>
-<use name="RecoCTPPS/PixelLocal"/>
-<use name="SimPPS/PPSPixelDigiProducer"/>
+<use   name="RecoCTPPS/PixelLocal"/>
+<use   name="SimPPS/PPSPixelDigiProducer"/>
 
 <library name="SimPPSPixelDigiProducerPlugins" file="*.cc">
 <flags   EDM_PLUGIN="1"/>

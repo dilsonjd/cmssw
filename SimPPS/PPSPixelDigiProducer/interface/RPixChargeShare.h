@@ -5,14 +5,11 @@
 #include <vector>
 #include "Geometry/VeryForwardGeometry/interface/CTPPSPixelSimTopology.h"
 #include "SimPPS/PPSPixelDigiProducer/interface/RPixSignalPoint.h"
-//class TFile;
-//class TH2D;
+
 class RPixChargeShare
 {
-
 public:
   RPixChargeShare(const edm::ParameterSet &params, uint32_t det_id);
-//    SimRP::strip_charge_map 
   std::map<unsigned short, double, std::less<unsigned short> > Share(const std::vector<RPixSignalPoint> &charge_map);
 
 private:

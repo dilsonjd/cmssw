@@ -17,13 +17,12 @@ public:
   ~RPixLinearChargeDivider();
 
   std::vector<RPixEnergyDepositUnit> divide(const PSimHit& hit);
+
 private:
   const edm::ParameterSet &params_;
   CLHEP::HepRandomEngine& rndEngine;
   uint32_t _det_id;
-
   bool fluctuateCharge_;
-
   int chargedivisions_;
   double deltaCut_;
   double pitch_;

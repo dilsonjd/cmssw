@@ -13,10 +13,10 @@ public:
   ~RPixHitChargeConverter();
     
   std::map<unsigned short, double, std::less<unsigned short> > processHit(const PSimHit &hit);
+
 private:
   const edm::ParameterSet &params_;
-  const uint32_t det_id_;
-    
+  const uint32_t det_id_;    
   RPixLinearChargeDivider* theRPixChargeDivider;
   RPixLinearChargeCollectionDrifter* theRPixChargeCollectionDrifter;
   RPixChargeShare* theRPixChargeShare;

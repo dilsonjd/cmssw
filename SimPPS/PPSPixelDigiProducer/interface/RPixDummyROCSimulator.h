@@ -23,6 +23,7 @@ public:
 			   std::vector<std::vector<std::pair<int, double> > > &output_digi_links, 
                            const CTPPSPixelGainCalibrations * pcalibration
     );
+
 private:
   typedef std::set<unsigned short, std::less<unsigned short> > dead_pixel_set;
   void SetDeadPixels();
@@ -32,14 +33,12 @@ private:
   bool dead_pixels_simulation_on_;
   dead_pixel_set dead_pixels_;
   int verbosity_;
-    
   unsigned short pixels_no_;
   double threshold_;
   double electron_per_adc_;
   int VcaltoElectronGain_;
   int VcaltoElectronOffset_;
   bool doSingleCalibration_;
-
   bool links_persistence_;
 };
 

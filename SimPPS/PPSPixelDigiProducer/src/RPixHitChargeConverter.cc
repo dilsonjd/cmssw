@@ -21,12 +21,11 @@ RPixHitChargeConverter::~RPixHitChargeConverter()
   delete theRPixChargeShare;
 }
 
-
 std::map<unsigned short, double, std::less<unsigned short> > RPixHitChargeConverter::processHit(const PSimHit &hit)
 {  
   std::vector<RPixEnergyDepositUnit> ions_along_path = theRPixChargeDivider->divide(hit);
   if(verbosity_)
-    std::cout<<"HitChargeConverter "<<det_id_<<" clouds no generated on the path="<<ions_along_path.size()<<std::endl;
+    edm::LogInfo("RPixHitChargeConverter")<<det_id_<<" clouds no generated on the path="<<ions_along_path.size();
   return theRPixChargeShare->Share(theRPixChargeCollectionDrifter->Drift(ions_along_path));
 }
 

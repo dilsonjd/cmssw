@@ -5,7 +5,6 @@
 #include "DataFormats/GeometryVector/interface/LocalPoint.h"
 #include "DataFormats/GeometryVector/interface/LocalVector.h"
 
-
 /**
  * An elementar charge point, with position, sigma from diffusion and tof.
  */
@@ -25,6 +24,7 @@ RPixSignalPoint(double x, double y, double s, double charge) :
   inline double Charge() const { return charge_;}
   inline double & Charge() { return charge_;}
   inline void SetCharge(double charge) { charge_ = charge;} 
+
 private:
   LocalPoint pos_;
   double sigma_;

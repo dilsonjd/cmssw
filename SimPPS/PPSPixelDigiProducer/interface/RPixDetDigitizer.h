@@ -9,8 +9,6 @@
 #include "SimGeneral/NoiseGenerators/interface/GaussianTailNoiseGenerator.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-//#include "FWCore/ParameterSet/interface/ParameterSetDescription.h"
-//#include "FWCore/ParameterSet/interface/ConfigurationDescriptions.h"
 
 #include "FWCore/Framework/interface/EventSetup.h"
 
@@ -43,14 +41,11 @@ public:
     );
 
   ~RPixDetDigitizer();
-//  static void fillDescriptions(edm::ConfigurationDescriptions & descriptions);
       
 private:
-//    RPGaussianTailNoiseAdder *theRPGaussianTailNoiseAdder;
   RPixPileUpSignals *theRPixPileUpSignals;
   RPixHitChargeConverter *theRPixHitChargeConverter;
   RPixDummyROCSimulator *theRPixDummyROCSimulator;
-//    RPDisplacementGenerator *theRPDisplacementGenerator;
 
 private:
   const edm::ParameterSet &params_;

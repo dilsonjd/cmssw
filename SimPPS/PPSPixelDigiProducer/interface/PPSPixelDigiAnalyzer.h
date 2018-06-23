@@ -1,7 +1,6 @@
 #ifndef SimPPS_RPIXDigiAnalyzer_h
 #define SimPPS_RPIXDigiAnalyzer_h
 
-
 #include "FWCore/Framework/interface/ConsumesCollector.h"
 
 #include <FWCore/Framework/interface/EDAnalyzer.h>
@@ -24,7 +23,6 @@ class TH1F;
 class TFile;
 class PSimHit;
 
-
 namespace edm {
   class ParameterSet; class Event; class EventSetup;}
 
@@ -36,10 +34,8 @@ class PPSPixelDigiAnalyzer : public edm::EDAnalyzer{
   void endJob();
   void beginJob();
   void analyze(const edm::Event & event, const edm::EventSetup& eventSetup);
-  // hDigis* WheelHistos(int wheel);
   
  private:
-//  typedef std::map<DTWireId, std::vector<const PSimHit*> > DTWireIdMap; 
 
  TH2D *hAllHits;
  TH2D *hOneHitperEvent;
@@ -51,9 +47,7 @@ class PPSPixelDigiAnalyzer : public edm::EDAnalyzer{
 
   int verbosity_;
   edm::EDGetTokenT< edm::PSimHitContainer > psim_token;
-//   edm::EDGetTokenT<CrossingFrame<PSimHit>> psim_token;
   edm::EDGetTokenT<edm::DetSetVector<CTPPSPixelDigi> > pixel_token;
-  
 
   CTPPSPixelSimTopology theRPixDetTopology_;
   unsigned int found_corresponding_digi_count;

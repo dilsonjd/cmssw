@@ -27,8 +27,7 @@ std::vector<RPixSignalPoint> RPixLinearChargeCollectionDrifter::Drift
       _temp[i].Charge() = energy_deposition[i].Energy()/GeV_per_electron_;
       if(verbosity_>1)
 	{
-	  std::cout<<"RPixLinearChargeCollectionDrifter "<<_det_id<<" :"<<_temp[i].Position()<<" "
-		   <<_temp[i].Sigma()<<" "<<_temp[i].Charge()<<std::endl;
+	  edm::LogInfo("RPixLinearChargeCollectionDrifter")<<_det_id<<" :"<<_temp[i].Position()<<" "<<_temp[i].Sigma()<<" "<<_temp[i].Charge();
 	}
     }
   return _temp;
