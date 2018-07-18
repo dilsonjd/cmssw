@@ -70,14 +70,12 @@ void CTPPSTotemDataFormatter::formatRawData(unsigned int lvl1_ID, RawData & fedR
       for (auto &pf : p.first) {
 	for(auto &pId : mapIdCh) {
 	  if (pf.first == pId.first) { //compare RawIds from iDdet2fed and mapIdCh	
-	    if(pId.second.size()>8) break; //skip planes with more than 8 fired strips 
 	    for (int b = 0; b < 12; b++) { buf[b] = 0; bufCRC[b] = 0; } 	
 	    TotemRPDetId chipId(pf.first);
-	    int ich = 0;
 	    for( auto &ch : pId.second ) {
-	      ich++;
-	      buf[10-ich] = ((ch) <<0 ); //data[8->1]
-	      bufCRC[ich] = buf[10-ich];
+        int chInWord = ch/16;
+        buf[9-chInWord] = (1 << (ch%16)); //data[8->1]
+        bufCRC[chInWord+1] = buf[9-chInWord];
 	    } 
 	    for (auto &ps : p.second) {
 	      fedId  = ps.first;		 
