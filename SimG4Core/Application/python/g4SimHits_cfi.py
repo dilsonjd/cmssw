@@ -444,7 +444,13 @@ g4SimHits = cms.EDProducer("OscarMTProducer",
         DistanceFromEdge = cms.double(1.0),
         StoreAllG4Hits   = cms.bool(False),
     ),
-    TotemSD = cms.PSet(
+    Totem_RP_SD = cms.PSet(
+        Verbosity = cms.int32(0)
+    ),
+    CTPPS_Diamond_SD = cms.PSet(
+        Verbosity = cms.int32(0)
+    ),
+    PPSPixelSD = cms.PSet(
         Verbosity = cms.untracked.int32(0)
     ),
     ZdcSD = cms.PSet(
