@@ -43,8 +43,6 @@ class CTPPSTotemDataFormatter {
     mutable int theWordCounter;
     mutable int theDigiCounter;
 
-    Word16 calculateCRC(Word16 crc_in, Word16 dato); 	 
-
   public:
 
     typedef std::map<int, FEDRawData> RawData;

@@ -87,7 +87,7 @@ void CTPPSTotemDataFormatter::formatRawData(unsigned int lvl1_ID, RawData & fedR
 		buf[1] = (pId.first >> 15); //data[9]
 		bufCRC[9]= buf[1]; 
 		Word16 crc_fin = 0xffff;
-		for (int i = 11; i >= 1; i--)  crc_fin = calculateCRC(crc_fin,bufCRC[i]);
+		for (int i = 11; i >= 1; i--)  crc_fin = VFATFrame::calculateCRC(crc_fin,bufCRC[i]);
 		buf[10] = crc_fin; //data[0] 
 		buf[11] = (15 << 12) | (0 << 8 ) | (12 << 0) ; //build trailer as RawDataUnpacker 
 		theWordCounter++;
@@ -156,31 +156,4 @@ void CTPPSTotemDataFormatter::formatRawData(unsigned int lvl1_ID, RawData & fedR
     fedRawData[fedId] = *rawData;
     delete rawData;
   } // end of rawData  
-}
-
-//From VFATFrame
-CTPPSTotemDataFormatter::Word16 CTPPSTotemDataFormatter::calculateCRC(Word16 crc_in, Word16 dato)
-{
-  word v = 0x0001;
-  word mask = 0x0001;    
-  bool d=false;
-  word crc_temp = crc_in;
-  unsigned char datalen = 16;
-
-  for (int i = 0; i < datalen; i++)
-  {
-    if (dato & v)
-      d = true;
-    else
-      d = false;
-
-    if ((crc_temp & mask)^d)
-      crc_temp = crc_temp>>1 ^ 0x8408;
-    else
-      crc_temp = crc_temp>>1;
-
-    v <<= 1;
-  }
-
-  return crc_temp;
 }
