@@ -39,6 +39,10 @@
 
 #include "EventFilter/CTPPSRawToDigi/interface/RPixErrorChecker.h"
 
+#include "CondFormats/CTPPSReadoutObjects/interface/CTPPSPixelIndices.h"
+#include "EventFilter/CTPPSRawToDigi/interface/CTPPSElectronicIndex.h"
+#include "FWCore/Utilities/interface/typedefs.h"
+
 #include <cstdint>
 #include <vector>
 #include <map>
@@ -52,7 +56,7 @@ public:
 
   typedef edm::DetSetVector<CTPPSPixelDigi> Collection;
 
-  typedef std::map<int, FEDRawData> RawData;
+  typedef std::unordered_map<int, FEDRawData> RawData;
   typedef std::vector<CTPPSPixelDigi> DetDigis;
 
   typedef std::vector<CTPPSPixelDataError> DetErrors;
@@ -60,6 +64,8 @@ public:
 
   typedef uint32_t Word32;
   typedef uint64_t Word64;
+
+  typedef std::unordered_map<cms_uint32_t,DetDigis> Digis;
 
   CTPPSPixelDataFormatter(std::map<CTPPSPixelFramePosition, CTPPSPixelROCInfo> const &mapping);
 
@@ -69,6 +75,21 @@ public:
 
   void interpretRawData( bool& errorsInEvent, int fedId,  const FEDRawData & data, Collection & digis, Errors & errors);
 
+  int nDigis() const { return m_DigiCounter; }
+
+   struct PPSPixelIndex {
+     uint32_t id;
+     unsigned int roc;
+     short unsigned int rocch;
+     short unsigned int fedid;
+     short unsigned int fedch;
+   };
+
+   void formatRawData( unsigned int lvl1_ID, RawData & fedRawData, const Digis & digis, std::vector<PPSPixelIndex> v_iDdet2fed);
+
+   static bool compare(const PPSPixelIndex& a, const PPSPixelIndex& b) {
+     return a.id < b.id || (a.id == b.id && a.roc < b.roc);
+   }
 
 
 private:
@@ -88,6 +109,10 @@ private:
   std::string print(const Word64& word) const;
 
   const std::map<CTPPSPixelFramePosition, CTPPSPixelROCInfo> &m_Mapping;
+
+  mutable int m_DigiCounter;
+  int m_allDetDigis, m_hasDetDigis;
+  CTPPSPixelIndices theIndices;
 
 };
 

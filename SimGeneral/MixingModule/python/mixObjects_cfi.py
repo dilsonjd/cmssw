@@ -49,14 +49,6 @@ mixSimHits = cms.PSet(
     #    'TotemHitsT2Gem')
     pcrossingFrames = cms.untracked.vstring()
 )
-from Configuration.ProcessModifiers.premix_stage1_cff import premix_stage1
-premix_stage1.toModify(mixSimHits,
-    pcrossingFrames = [
-        'MuonCSCHits',
-        'MuonDTHits',
-        'MuonRPCHits',
-    ]
-)
 
 # fastsim customs
 from Configuration.Eras.Modifier_fastSim_cff import fastSim
@@ -221,7 +213,7 @@ mixPCFHepMCProducts = cms.PSet(
     type = cms.string('HepMCProductPCrossingFrame')
 )
 
-from SimCalorimetry.HGCalSimProducers.hgcalDigitizer_cfi import hgceeDigitizer, hgchefrontDigitizer, hgchebackDigitizer, hfnoseDigitizer
+from SimCalorimetry.HGCalSimProducers.hgcalDigitizer_cfi import hgceeDigitizer, hgchefrontDigitizer, hfnoseDigitizer
 
 from Configuration.Eras.Modifier_run2_GEM_2017_cff import run2_GEM_2017
 run2_GEM_2017.toModify( theMixObjects,
@@ -229,11 +221,6 @@ run2_GEM_2017.toModify( theMixObjects,
         input = theMixObjects.mixSH.input + [ cms.InputTag("g4SimHits","MuonGEMHits") ],
         subdets = theMixObjects.mixSH.subdets + [ 'MuonGEMHits' ],
         crossingFrames = theMixObjects.mixSH.crossingFrames + [ 'MuonGEMHits' ]
-    )
-)
-(premix_stage1 & run2_GEM_2017).toModify(theMixObjects,
-    mixSH = dict(
-        pcrossingFrames = theMixObjects.mixSH.pcrossingFrames + [ 'MuonGEMHits' ]
     )
 )
 from Configuration.Eras.Modifier_run3_GEM_cff import run3_GEM
@@ -244,11 +231,6 @@ run3_GEM.toModify( theMixObjects,
         crossingFrames = theMixObjects.mixSH.crossingFrames + [ 'MuonGEMHits' ]
     )
 )
-(premix_stage1 & run3_GEM).toModify(theMixObjects,
-    mixSH = dict(
-        pcrossingFrames = theMixObjects.mixSH.pcrossingFrames + [ 'MuonGEMHits' ]
-    )
-)
 from Configuration.Eras.Modifier_phase2_muon_cff import phase2_muon
 phase2_muon.toModify( theMixObjects,
     mixSH = dict(
@@ -257,6 +239,7 @@ phase2_muon.toModify( theMixObjects,
         crossingFrames = theMixObjects.mixSH.crossingFrames + [ 'MuonME0Hits' ]
     )
 )
+from Configuration.ProcessModifiers.premix_stage1_cff import premix_stage1
 (premix_stage1 & phase2_muon).toModify(theMixObjects,
     mixSH = dict(
         pcrossingFrames = theMixObjects.mixSH.pcrossingFrames + [ 'MuonME0Hits' ]
@@ -269,13 +252,6 @@ phase2_hgcal.toModify( theMixObjects,
                                               cms.InputTag("g4SimHits",hgchefrontDigitizer.hitCollection.value()) ],
         subdets = theMixObjects.mixCH.subdets + [ hgceeDigitizer.hitCollection.value(),
                                                   hgchefrontDigitizer.hitCollection.value() ],
-    )
-)
-from Configuration.Eras.Modifier_phase2_hgcalV9_cff import phase2_hgcalV9
-phase2_hgcalV9.toModify( theMixObjects,
-    mixCH = dict(
-        input = theMixObjects.mixCH.input + [ cms.InputTag("g4SimHits",hgchebackDigitizer.hitCollection.value()) ],
-        subdets = theMixObjects.mixCH.subdets + [ hgchebackDigitizer.hitCollection.value() ],
     )
 )
 from Configuration.Eras.Modifier_phase2_hfnose_cff import phase2_hfnose
@@ -293,4 +269,13 @@ phase2_timing_layer.toModify( theMixObjects,
         subdets = theMixObjects.mixSH.subdets + [ 'FastTimerHitsBarrel','FastTimerHitsEndcap' ],
         crossingFrames = theMixObjects.mixSH.crossingFrames + [ 'FastTimerHitsBarrel','FastTimerHitsEndcap' ]
     )
+)
+
+from Configuration.Eras.Modifier_ctpps_2016_cff import ctpps_2016
+ctpps_2016.toModify( theMixObjects, 
+    mixSH = dict(
+        input = theMixObjects.mixSH.input + [ cms.InputTag("g4SimHits","TotemHitsRP"),cms.InputTag("g4SimHits","CTPPSPixelHits") ],
+        subdets = theMixObjects.mixSH.subdets + [ 'TotemHitsRP', 'CTPPSPixelHits' ],
+        crossingFrames = theMixObjects.mixSH.crossingFrames + [ 'TotemHitsRP' , 'CTPPSPixelHits']
+    )   
 )
