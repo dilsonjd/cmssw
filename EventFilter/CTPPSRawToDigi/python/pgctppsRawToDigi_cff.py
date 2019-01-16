@@ -4,7 +4,4 @@ import FWCore.ParameterSet.Config as cms
 
 from EventFilter.CTPPSRawToDigi.ctppsRawToDigi_cff import *
 
-from EventFilter.CTPPSRawToDigi.ctppsPixelRawToDigi_cfi import ctppsPixelDigis
-ctppsPixelDigis.inputLabel = cms.InputTag("ctppsPixelRawData")
-
 ctppsRawToDigi = cms.Sequence(totemRPRawToDigi*totemTriggerRawToDigi*ctppsPixelDigis)
