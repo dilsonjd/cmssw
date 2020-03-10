@@ -24,8 +24,8 @@ muonCSCDigis = EventFilter.CSCRawToDigi.cscUnpacker_cfi.muonCSCDigis.clone()
 import EventFilter.DTRawToDigi.dtunpacker_cfi
 muonDTDigis = EventFilter.DTRawToDigi.dtunpacker_cfi.muonDTDigis.clone()
 
-import EventFilter.RPCRawToDigi.RPCRawToDigi_cfi 
-muonRPCDigis = EventFilter.RPCRawToDigi.RPCRawToDigi_cfi.muonRPCDigis.clone()
+import EventFilter.RPCRawToDigi.rpcRawToDigi_cfi
+muonRPCDigis = EventFilter.RPCRawToDigi.rpcRawToDigi_cfi.muonRPCDigis.clone()
 
 import EventFilter.GEMRawToDigi.muonGEMDigis_cfi
 muonGEMDigis = EventFilter.GEMRawToDigi.muonGEMDigis_cfi.muonGEMDigis.clone()
@@ -124,3 +124,9 @@ _hfnose_RawToDigiTask.add(hfnoseDigis)
 from Configuration.Eras.Modifier_phase2_hfnose_cff import phase2_hfnose
 phase2_hfnose.toReplaceWith(RawToDigiTask,_hfnose_RawToDigiTask)
 
+from Configuration.Eras.Modifier_run3_RPC_cff import run3_RPC
+run3_RPC.toModify(muonRPCDigis,
+    inputTagTwinMuxDigis = 'rpcTwinMuxRawToDigi',
+    inputTagOMTFDigis = 'omtfStage2Digis',
+    inputTagCPPFDigis = 'rpcCPPFRawToDigi'
+)

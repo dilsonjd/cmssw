@@ -13,6 +13,7 @@ from EventFilter.HcalRawToDigi.HcalDigiToRaw_cfi import *
 from EventFilter.CSCRawToDigi.cscPacker_cfi import *
 from EventFilter.DTRawToDigi.dtPacker_cfi import *
 from EventFilter.RPCRawToDigi.rpcPacker_cfi import *
+from EventFilter.RPCRawToDigi.rpcDigiToRaw_cfi import *
 from EventFilter.GEMRawToDigi.gemPacker_cfi import *
 from EventFilter.CastorRawToDigi.CastorDigiToRaw_cfi import *
 from EventFilter.RawDataCollector.rawDataCollector_cfi import *
@@ -57,3 +58,10 @@ fastSim.toReplaceWith(DigiToRawTask, DigiToRawTask.copyAndExclude([siPixelRawDat
 
 from Configuration.Eras.Modifier_phase2_ecal_devel_cff import phase2_ecal_devel
 phase2_ecal_devel.toReplaceWith(DigiToRawTask, DigiToRawTask.copyAndExclude([esDigiToRaw]))
+
+from Configuration.Eras.Modifier_run3_RPC_cff import run3_RPC
+_rpc_DigiToRawTask = DigiToRawTask.copy()
+_rpc_DigiToRawTask.add(rpcDigiToRawTask)
+
+run3_RPC.toReplaceWith(DigiToRawTask,_rpc_DigiToRawTask) 
+run3_RPC.toReplaceWith(DigiToRawTask, DigiToRawTask.copyAndExclude([rpcpacker]))
