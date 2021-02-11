@@ -89,6 +89,8 @@ void RPCCPPFDigiToRaw::produce(edm::Event& event, edm::EventSetup const& setup) 
     edm::Handle<RPCDigiCollection> digi_collection;
     event.getByToken(digi_token_, digi_collection);
 
+    std::unique_ptr<l1t::CPPFDigiCollection> rpc_cppf_digis(new l1t::CPPFDigiCollection()); //cppfdigis
+
     // Create output
     std::unique_ptr<FEDRawDataCollection> data_collection(new FEDRawDataCollection());
     std::map<RPCAMCLink, std::vector<std::pair<int, rpccppf::RXRecord> > > amc_bx_cppfrecord;
@@ -98,6 +100,7 @@ void RPCCPPFDigiToRaw::produce(edm::Event& event, edm::EventSetup const& setup) 
             bx_max_,
             event.bunchCrossing(),
             *digi_collection,
+            *rpc_cppf_digis, //cppfdigis
             amc_bx_cppfrecord,
             ignore_eod_);
 
@@ -108,11 +111,11 @@ void RPCCPPFDigiToRaw::produce(edm::Event& event, edm::EventSetup const& setup) 
         // FED Header + BLOCK Header (1 word + 1 word)
         rawdata.resize((size + 2) * 8);
         // FED Header
-        FEDHeader::set(rawdata.data() + size * 8, event_type_, event.id().event(), event.bunchCrossing(), fed_amcs.first);
+        FEDHeader::set(reinterpret_cast<unsigned char *>(rawdata.data()) + size * 8, event_type_, event.id().event(), event.bunchCrossing(), fed_amcs.first);
         ++size;
 
         rpcamc13::Header amc13header(1, fed_amcs.second.size(), event.eventAuxiliary().orbitNumber()) ;
-        std::memcpy(rawdata.data() + size * 8, &amc13header.getRecord(), 8);
+        std::memcpy(reinterpret_cast<unsigned char *>(rawdata.data()) + size * 8, &amc13header.getRecord(), 8);
         ++size;
 
         // BLOCK AMC Content - 1 word each
@@ -122,8 +125,9 @@ void RPCCPPFDigiToRaw::produce(edm::Event& event, edm::EventSetup const& setup) 
         for (RPCAMCLink const& amc : fed_amcs.second) {
             std::map<RPCAMCLink, std::vector<std::pair<int, rpccppf::RXRecord> > >::const_iterator bx_cppfrecord(amc_bx_cppfrecord.find(amc));
             unsigned int block_amc_size(3 + 2 * (bx_cppfrecord == amc_bx_cppfrecord.end() ? 0 : bx_cppfrecord->second.size()));
-            block_size+=block_amc_size; 
+            rpcamc::Header amc_amc_header(amc.getAMCNumber(), event.id().event(), event.bunchCrossing(), bx_cppfrecord->second.size(), event.eventAuxiliary().orbitNumber(),0);
             if (bx_cppfrecord != amc_bx_cppfrecord.end()) {
+                block_size+=block_amc_size; 
                 int blknumber(0); 
                 rpcamc13::AMCHeader amc13_amc_header; 
                 for (std::vector<std::pair<int, rpccppf::RXRecord> >::const_iterator cppfrecord = bx_cppfrecord->second.begin();
@@ -135,11 +139,13 @@ void RPCCPPFDigiToRaw::produce(edm::Event& event, edm::EventSetup const& setup) 
                     amc13_amc_header.setAMCNumber(amc.getAMCNumber()); 
                     amc13_amc_header.setBoardId(8);
 
-                    std::memcpy(rawdata.data() + size * 8, &amc13_amc_header.getRecord(), 8);
+                    std::memcpy(reinterpret_cast<unsigned char *>(rawdata.data()) + size * 8, &amc13_amc_header.getRecord(), 8);
                     ++blknumber;
                     ++size;
                 } 
                 block_size+=amc13_amc_header.getSizeInBlock();
+                std::memcpy(reinterpret_cast<unsigned char *>(rawdata.data()) + size * 8, amc_amc_header.getRecord(), 16);
+                size += amc_amc_header.getDataLength();
             }
         }
 
@@ -150,11 +156,11 @@ void RPCCPPFDigiToRaw::produce(edm::Event& event, edm::EventSetup const& setup) 
             // CPPF Header
             std::map<RPCAMCLink, std::vector<std::pair<int, rpccppf::RXRecord> > >::const_iterator bx_cppfrecord(
                     amc_bx_cppfrecord.find(amc));
-            unsigned int block_amc_size(3 + 2 * (bx_cppfrecord == amc_bx_cppfrecord.end() ? 0 : bx_cppfrecord->second.size()));
-
+            if (bx_cppfrecord != amc_bx_cppfrecord.end()) {
             // BLOCK Header
             rpcmp7::BlockHeader cppf_BlockHeader;
-            int length(72), cap_id(1), index(0);
+            int length(72), index(0);
+            unsigned int cap_id(0x01); 
             bool zs_per_bx = false;
             bool is_zs = false;
             cppf_BlockHeader.setZeroSuppressed(is_zs);
@@ -162,20 +168,16 @@ void RPCCPPFDigiToRaw::produce(edm::Event& event, edm::EventSetup const& setup) 
             cppf_BlockHeader.setCaptionId(cap_id);
             cppf_BlockHeader.setLength(length);
             for (int j = 0 ; j<3 ; j++) {
-                index = j*2;
                 cppf_BlockHeader.setId(index);
-                std::memcpy(rawdata.data() + size * 8, &cppf_BlockHeader.getRecord(), 8);
+                std::memcpy(reinterpret_cast<unsigned char *>(rawdata.data()) + size * 8, &cppf_BlockHeader.getRecord(), 8);
                 ++size;
+                index +=2;
             }
-            rpcamc::Header amc_amc_header(amc.getAMCNumber(), event.id().event(), event.bunchCrossing(), bx_cppfrecord->second.size(), event.eventAuxiliary().orbitNumber(),0);  
-            if (bx_cppfrecord != amc_bx_cppfrecord.end()) {
 
-                std::memcpy(rawdata.data() + size * 8, amc_amc_header.getRecord(), 16);
-                size += amc_amc_header.getDataLength(); 
                 for (std::vector<std::pair<int, rpccppf::RXRecord> >::const_iterator cppfrecord = bx_cppfrecord->second.begin();
                         cppfrecord != bx_cppfrecord->second.end();
                         ++cppfrecord) {
-                    std::memcpy(rawdata.data() + size * 8, &cppfrecord->second.getRecord(), sizeof(cppfrecord->second.getRecord())); 
+                    std::memcpy(reinterpret_cast<unsigned char *>(rawdata.data()) + size * 8, &cppfrecord->second.getRecord(), sizeof(cppfrecord->second.getRecord())); 
                     size += 2;
                 }
             }
@@ -184,15 +186,15 @@ void RPCCPPFDigiToRaw::produce(edm::Event& event, edm::EventSetup const& setup) 
         rawdata.resize((size + 2) * 8);
         // BLOCK Trailer
         rpcamc::Trailer block_trailer(0x0, event.id().event(), event.bunchCrossing());
-        std::memcpy(rawdata.data() + size * 8, &block_trailer.getRecord(), 8);
+        std::memcpy(reinterpret_cast<unsigned char *>(rawdata.data()) + size * 8, &block_trailer.getRecord(), 8);
         ++size;
         // CRC32 not calculated (for now)
         // FED Trailer
         ++size;
 
-        FEDTrailer::set(rawdata.data() + (size - 1) * 8, size, 0x0, 0, 0);
+        FEDTrailer::set(reinterpret_cast<unsigned char *>(rawdata.data()) + (size - 1) * 8, size, 0x0, 0, 0);
         std::uint16_t crc(evf::compute_crc(rawdata.data(), size * 8));
-        FEDTrailer::set(rawdata.data() + (size - 1) * 8, size, crc, 0, 0);
+        FEDTrailer::set(reinterpret_cast<unsigned char *>(rawdata.data()) + (size - 1) * 8, size, crc, 0, 0);
 
     }
     event.put(std::move(data_collection));

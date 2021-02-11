@@ -14,6 +14,7 @@ void RPCCPPFPacker::getRPCCPPFRecords(
         int max_bx,
         unsigned int bcn,
         RPCDigiCollection const& digis,
+        l1t::CPPFDigiCollection& cppfdigis, //cppfdigis
         std::map<RPCAMCLink, std::vector<std::pair<int, rpccppf::RXRecord> > >& amc_bx_cppfrecord,
         bool ignore_eod)
 {

@@ -7,7 +7,7 @@
 #include "CondFormats/RPCObjects/interface/RPCAMCLink.h"
 #include "DataFormats/RPCDigi/interface/RPCDigiCollection.h"
 #include "EventFilter/RPCRawToDigi/interface/RPCCPPFRecord.h"
-
+#include "DataFormats/L1TMuon/interface/CPPFDigi.h" //cppfdigis
 class RPCInverseLBLinkMap;
 class RPCInverseAMCLinkMap;
 
@@ -20,6 +20,7 @@ public:
       int max_bx,
       unsigned int bcn,
       RPCDigiCollection const& digis,
+      l1t::CPPFDigiCollection &cppfdigis, //cppfdigis
       std::map<RPCAMCLink, std::vector<std::pair<int, rpccppf::RXRecord> > >& amc_bx_cppfrecord,
       bool ignore_eod = false);
 };
