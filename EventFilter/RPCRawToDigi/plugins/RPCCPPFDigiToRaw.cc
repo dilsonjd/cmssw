@@ -32,7 +32,7 @@
 #include "DataFormats/RPCDigi/interface/RPCDigiCollection.h"
 
 RPCCPPFDigiToRaw::RPCCPPFDigiToRaw(edm::ParameterSet const& config)
-    : es_cppf_link_map_br_token_(esConsumes<RPCAMCLinkMap,RPCCPPFLinkMapRcd>()),
+    : es_cppf_link_map_br_token_(esConsumes<RPCAMCLinkMap,RPCCPPFLinkMapRcd, edm::Transition::BeginRun>()),
       es_cppf_link_map_token_(esConsumes<RPCInverseAMCLinkMap,RPCInverseCPPFLinkMapRcd>()),
       es_lb_link_map_token_(esConsumes<RPCInverseLBLinkMap,RPCInverseLBLinkMapRcd>()),
       bx_min_(config.getParameter<int>("bxMin")),

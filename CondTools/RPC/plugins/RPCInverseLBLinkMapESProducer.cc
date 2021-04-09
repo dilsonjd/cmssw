@@ -1,5 +1,7 @@
 #include "CondTools/RPC/plugins/RPCInverseLBLinkMapESProducer.h"
 
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ParameterSet/interface/ParameterSetDescription.h"
@@ -11,23 +13,36 @@
 
 #include "DataFormats/MuonDetId/interface/RPCDetId.h"
 
-RPCInverseLBLinkMapESProducer::RPCInverseLBLinkMapESProducer(edm::ParameterSet const& _config) {
-  setWhatProduced(this);
+RPCInverseLBLinkMapESProducer::RPCInverseLBLinkMapESProducer(edm::ParameterSet const& _config)
+//    : es_rpc_lb_map_token_(esConsumes<RPCLBLinkMap, RPCLBLinkMapRcd>())
+// {
+//  setWhatProduced(this);
+//}
+{
+  auto cc = setWhatProduced(this);
+
+//  es_rpc_lb_map_token_ = cc.consumes();
+//  es_rpc_lb_map_token_ = cc.consumesFrom<RPCLBLinkMap, RPCLBLinkMapRcd>(edm::ESInputTag{});
+  es_rpc_lb_map_token_ = cc.consumesFrom<RPCLBLinkMap, RPCLBLinkMapRcd>();
 }
+
 
 void RPCInverseLBLinkMapESProducer::fillDescriptions(edm::ConfigurationDescriptions& _descs) {
   edm::ParameterSetDescription _desc;
   _descs.add("RPCInverseLBLinkMapESProducer", _desc);
 }
 
-void RPCInverseLBLinkMapESProducer::setupRPCLBLinkMap(RPCLBLinkMapRcd const& _rcd,
-                                                      RPCInverseLBLinkMap* inverse_linkmap) {
+void RPCInverseLBLinkMapESProducer::setupRPCLBLinkMap(RPCLBLinkMapRcd const& _rcd, RPCInverseLBLinkMap* inverse_linkmap) {
+
   RPCInverseLBLinkMap::map_type& _inverse_map(inverse_linkmap->getMap());
   _inverse_map.clear();
 
-  edm::ESHandle<RPCLBLinkMap> _es_map;
-  _rcd.get(_es_map);
-  RPCLBLinkMap const& _map = *(_es_map.product());
+//  edm::ESHandle<RPCLBLinkMap> _es_map;
+//  _rcd.get(_es_map);
+//  RPCLBLinkMap const& _map = *(_es_map.product());
+//  RPCLBLinkMap const& _map = *(_rcd.get(es_rpc_lb_map_token_));
+  RPCLBLinkMap const& _map = _rcd.get(es_rpc_lb_map_token_);
+  
   for (auto const& _link : _map.getMap()) {
     _inverse_map.insert(RPCInverseLBLinkMap::map_type::value_type(_link.second.getRPCDetId().rawId(), _link));
   }

@@ -1,5 +1,7 @@
 #include "CondTools/RPC/plugins/RPCInverseTwinMuxLinkMapESProducer.h"
 
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ParameterSet/interface/ParameterSetDescription.h"
@@ -9,9 +11,16 @@
 #include "CondFormats/DataRecord/interface/RPCTwinMuxLinkMapRcd.h"
 #include "CondFormats/DataRecord/interface/RPCInverseTwinMuxLinkMapRcd.h"
 
-RPCInverseTwinMuxLinkMapESProducer::RPCInverseTwinMuxLinkMapESProducer(edm::ParameterSet const& _config) {
-  setWhatProduced(this);
+RPCInverseTwinMuxLinkMapESProducer::RPCInverseTwinMuxLinkMapESProducer(edm::ParameterSet const& _config)
+//{
+//  setWhatProduced(this);
+//}
+{
+  auto cc = setWhatProduced(this);
+//  es_rpc_tm_l_map_token_ = cc.consumesFrom<RPCAMCLinkMap, RPCTwinMuxLinkMapRcd>(edm::ESInputTag{});
+  es_rpc_tm_l_map_token_ = cc.consumesFrom<RPCAMCLinkMap, RPCTwinMuxLinkMapRcd>();
 }
+
 
 void RPCInverseTwinMuxLinkMapESProducer::fillDescriptions(edm::ConfigurationDescriptions& _descs) {
   edm::ParameterSetDescription _desc;
@@ -23,9 +32,10 @@ void RPCInverseTwinMuxLinkMapESProducer::setupRPCTwinMuxLinkMap(RPCTwinMuxLinkMa
   RPCInverseAMCLinkMap::map_type& _inverse_map(inverse_linkmap->getMap());
   _inverse_map.clear();
 
-  edm::ESHandle<RPCAMCLinkMap> _es_map;
-  _rcd.get(_es_map);
-  RPCAMCLinkMap const& _map = *(_es_map.product());
+//  edm::ESHandle<RPCAMCLinkMap> _es_map;
+//  _rcd.get(_es_map);
+//  RPCAMCLinkMap const& _map = *(_es_map.product());
+  RPCAMCLinkMap const& _map = _rcd.get(es_rpc_tm_l_map_token_);
   for (auto const& _link : _map.getMap()) {
     _inverse_map.insert(RPCInverseAMCLinkMap::map_type::value_type(_link.second, _link.first));
   }
